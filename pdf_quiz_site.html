@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Try Java Assignment 2026 Week 1 to 12</title>
+  <style>
+    :root { --navy:#17365d; --blue:#2f75b5; --ink:#1f2937; --muted:#64748b; --line:#d9e2ec; --green:#16803c; --green-bg:#eaf7ee; --red:#b42318; --red-bg:#fff0ef; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--ink); background:linear-gradient(135deg,#eef4fb,#f9fbfd); }
+    .app { max-width:980px; margin:auto; padding:28px 18px 48px; }
+    .topbar { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; margin-bottom:18px; }
+    .top-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .eyebrow { color:var(--blue); font-weight:800; letter-spacing:.08em; text-transform:uppercase; font-size:12px; }
+    h1 { margin:6px 0 5px; color:var(--navy); font-size:clamp(26px,4vw,42px); line-height:1.1; }
+    h2 { color:var(--navy); margin:8px 0 10px; }
+    .subtitle { margin:0; color:var(--muted); }
+    .pill { background:#fff; border:1px solid var(--line); border-radius:999px; padding:10px 14px; white-space:nowrap; font-weight:800; color:var(--navy); box-shadow:0 5px 16px #17365d12; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:22px; padding:clamp(20px,4vw,38px); margin-top:18px; box-shadow:0 14px 34px #17365d12; }
+    .upload-card { text-align:center; }
+    .dropzone { display:block; border:2px dashed #9bb9d7; border-radius:18px; padding:34px 18px; background:#f7fbff; cursor:pointer; transition:.15s ease; }
+    .dropzone:hover,.dropzone.dragging { border-color:var(--blue); background:#eef7ff; }
+    .dropzone strong { display:block; font-size:20px; color:var(--navy); margin-bottom:8px; }
+    .dropzone span { display:block; color:var(--muted); }
+    .name-field { max-width:520px; margin:20px auto 0; text-align:left; }
+    .name-field label { display:block; color:var(--navy); font-weight:800; margin-bottom:8px; }
+    .name-field input { width:100%; border:1px solid var(--line); border-radius:12px; padding:13px 14px; font:inherit; color:var(--ink); }
+    .name-field input:focus { outline:3px solid #d9ebfb; border-color:var(--blue); }
+    .privacy-note { margin:8px 0 0; color:var(--muted); font-size:12px; }
+    .sample-action { margin-top:14px; }
+    .start-hint { margin:14px 0 0; color:var(--navy); font-size:14px; font-weight:800; text-align:center; }
+    .start-hint.ready { color:var(--green); }
+    input[type=file] { display:none; }
+    .file-name { margin:13px 0 0; color:var(--navy); font-weight:800; min-height:22px; }
+    .actions { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:18px; }
+    button { border:0; border-radius:12px; padding:12px 18px; font:inherit; font-weight:800; cursor:pointer; transition:.15s ease; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    .primary { color:#fff; background:var(--navy); box-shadow:0 7px 16px #17365d2b; }
+    .primary:hover:not(:disabled) { background:#22538c; transform:translateY(-1px); }
+    .secondary { color:var(--navy); background:#e9f0f7; }
+    .status { margin-top:18px; padding:12px 14px; border-radius:12px; display:none; text-align:left; line-height:1.45; }
+    .status.show { display:block; }
+    .status.error { color:var(--red); background:var(--red-bg); border:1px solid #e8a09a; }
+    .status.success { color:var(--green); background:var(--green-bg); border:1px solid #8ad29d; }
+    .status.info { color:var(--navy); background:#eef6ff; border:1px solid #a8c8e6; }
+    .progress-shell { background:#fff; border:1px solid var(--line); border-radius:18px; padding:14px 16px; box-shadow:0 8px 24px #17365d0d; margin-top:18px; }
+    .progress-meta { display:flex; justify-content:space-between; color:var(--muted); font-size:13px; margin-bottom:8px; }
+    .progress { height:10px; background:#e8eef5; border-radius:999px; overflow:hidden; }
+    .progress > div { height:100%; width:0; background:linear-gradient(90deg,var(--blue),#56a6e2); border-radius:inherit; transition:width .25s ease; }
+    .quiz-card,.results { display:none; }
+    .quiz-card.show,.results.show { display:block; }
+    .question-meta { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+    .badge { border-radius:999px; padding:6px 10px; font-size:12px; font-weight:800; }
+    .week { background:#e6f0fb; color:var(--navy); }
+    .assignment { background:#f2ecff; color:#6542a4; }
+    .question-number { color:var(--muted); font-size:13px; font-weight:700; margin-left:auto; }
+    .question { white-space:pre-wrap; font-size:clamp(18px,2.5vw,23px); line-height:1.55; font-weight:750; margin:0 0 22px; }
+    .options { display:grid; gap:12px; }
+    .option { display:flex; gap:12px; align-items:flex-start; border:1px solid var(--line); border-radius:15px; padding:15px 16px; cursor:pointer; transition:.15s ease; background:#fff; }
+    .option:hover { border-color:#93bce1; background:#f8fbff; transform:translateY(-1px); }
+    .option input { margin-top:4px; accent-color:var(--blue); width:18px; height:18px; flex:0 0 auto; }
+    .option-letter { font-weight:900; color:var(--blue); min-width:24px; }
+    .option-text { line-height:1.45; white-space:pre-wrap; }
+    .option.correct { border-color:#63b67c; background:var(--green-bg); }
+    .option.wrong { border-color:#e08b83; background:var(--red-bg); }
+    .feedback { display:none; margin-top:18px; padding:14px 16px; border-radius:13px; line-height:1.5; }
+    .feedback.show { display:block; }
+    .feedback.correct { color:var(--green); background:var(--green-bg); border:1px solid #8ad29d; }
+    .feedback.wrong { color:var(--red); background:var(--red-bg); border:1px solid #e8a09a; }
+    .explanation { margin-top:8px; color:#334155; }
+    .controls { display:flex; justify-content:space-between; gap:12px; margin-top:24px; }
+    .score-circle { width:150px; height:150px; margin:12px auto 20px; border-radius:50%; display:grid; place-items:center; background:radial-gradient(circle at 30% 25%,#73b5e7,var(--navy)); color:#fff; box-shadow:0 16px 30px #17365d35; text-align:center; }
+    .score-circle strong { display:block; font-size:38px; line-height:1; }
+    .score-circle span { display:block; font-size:13px; margin-top:5px; opacity:.9; }
+    .review { display:grid; gap:9px; margin-top:22px; max-height:420px; overflow:auto; text-align:left; }
+    .review-row { display:grid; grid-template-columns:54px 1fr auto; gap:10px; align-items:center; border:1px solid var(--line); border-radius:10px; padding:9px 10px; font-size:13px; }
+    .review-row.ok { border-left:4px solid var(--green); } .review-row.bad { border-left:4px solid var(--red); }
+    .review-status { font-weight:900; } .ok .review-status { color:var(--green); } .bad .review-status { color:var(--red); }
+    .footnote { margin-top:18px; color:var(--muted); font-size:12px; text-align:center; }
+    .admin-link { color:var(--blue); font-weight:800; text-decoration:none; }
+    #visitorPill.loading { visibility:hidden; }
+     @media (max-width:640px) { .topbar{flex-direction:column}.top-actions{justify-content:flex-start}.pill{align-self:flex-start}.question-number{margin-left:0;width:100%}.controls{flex-direction:column-reverse}.controls button{width:100%}.review-row{grid-template-columns:45px 1fr}.review-status{grid-column:2} }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="topbar">
+       <div><div class="eyebrow">PDF → Interactive Quiz</div><h1>Try Java Assignment 2026 Week 1 to 12</h1><p class="subtitle">Upload an MCQ PDF and let people answer one question at a time.</p></div>
+       <div class="top-actions"><div class="pill loading" id="visitorPill">Total Visits</div><div class="pill" id="scorePill">No quiz loaded</div></div>
+    </div>
+
+    <section class="card upload-card" id="uploadCard">
+       <div class="eyebrow">Start here</div>
+       <h2>Enter your name</h2>
+       <div class="name-field"><label for="userName">Your name</label><input id="userName" type="text" maxlength="100" autocomplete="name" placeholder="Your name"><p class="privacy-note">Only your name is recorded for the quiz. No password is required.</p><p class="start-hint" id="startHint">First write your name, then the quiz button will enable.</p><div class="sample-action"><button class="secondary" id="sampleBtn" type="button" disabled>Try Java Assignment 2026 Week 1 to 12</button></div></div>
+       <div class="eyebrow" style="margin-top:30px">Step 2</div>
+       <h2>Upload your question PDF</h2>
+       <p class="subtitle">Text-based PDFs work best. After extraction, the quiz will be generated automatically.</p>
+       <label class="dropzone" id="dropzone" for="pdfInput">
+        <strong>Click to choose a PDF</strong>
+        <span>or drag and drop it here • maximum 20 MB</span>
+        <input id="pdfInput" type="file" accept="application/pdf">
+      </label>
+      <div class="file-name" id="fileName">No PDF selected</div>
+        <div class="actions"><button class="primary" id="createBtn" type="button" disabled>Create Quiz</button></div>
+      <div class="status" id="uploadStatus"></div>
+    </section>
+
+    <section class="progress-shell" id="progressShell" style="display:none"><div class="progress-meta"><span id="progressLabel">Question 1</span><span id="percentLabel">0%</span></div><div class="progress"><div id="progressBar"></div></div></section>
+
+    <section class="card quiz-card" id="quizCard">
+      <div class="question-meta"><span class="badge week" id="weekBadge">Set 1</span><span class="badge assignment" id="assignmentBadge">PDF</span><span class="question-number" id="questionNumber"></span></div>
+      <div class="question" id="questionText"></div><div class="options" id="options"></div><div class="feedback" id="feedback"></div>
+      <div class="controls"><button class="secondary" id="previousBtn" type="button">Previous</button><button class="primary" id="checkBtn" type="button">Check Answer</button><button class="primary" id="nextBtn" type="button" hidden>Next Question</button></div>
+    </section>
+
+    <section class="card results" id="resultsCard"><div class="eyebrow">Quiz complete</div><h2>Final Score</h2><div class="score-circle"><div><strong id="finalScore">0 / 0</strong><span id="finalPercent">0%</span></div></div><p class="subtitle" id="resultSummary"></p><div class="actions"><button class="primary" id="newQuizBtn" type="button">Upload Another PDF</button></div><div class="review" id="review"></div></section>
+     <div class="footnote">PDF processing happens on this local server. <a class="admin-link" href="/admin">Owner Dashboard</a></div>
+  </main>
+  <script>
+    let questions = [], current = 0, score = 0, checked = [], selected = [], outcomes = [];
+    const $ = (id) => document.getElementById(id);
+     const uploadStatus = $("uploadStatus"), dropzone = $("dropzone"), pdfInput = $("pdfInput"), userName = $("userName"), createBtn = $("createBtn"), sampleBtn = $("sampleBtn");
+     function updateStartButtons() { const hasName = userName.value.trim().length > 0; createBtn.disabled = !(hasName && pdfInput.files[0]); sampleBtn.disabled = !hasName; $("startHint").textContent = hasName ? "Your name is ready. Tap the quiz button to start." : "First write your name, then the quiz button will enable."; $("startHint").className = `start-hint${hasName ? " ready" : ""}`; }
+     userName.addEventListener("input", updateStartButtons);
+     updateStartButtons();
+     async function loadVisitorCount() { try { const response = await fetch(`/api/visit?t=${Date.now()}`, {cache:"no-store"}); const data = await response.json(); $("visitorPill").textContent = `Total Visits: ${Number(data.visits || 0).toLocaleString()}`; $("visitorPill").classList.remove("loading"); } catch (_) { $("visitorPill").textContent = "Total Visits: —"; $("visitorPill").classList.remove("loading"); } }
+     loadVisitorCount();
+    function esc(value) { return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
+    function status(message, type="info") { uploadStatus.className = `status show ${type}`; uploadStatus.textContent = message; }
+     function setFile(file) { if (!file) return; if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) { status("Please choose a PDF file.","error"); return; } pdfInput.files = (() => { const dt = new DataTransfer(); dt.items.add(file); return dt.files; })(); $("fileName").textContent = file.name; updateStartButtons(); status("PDF ready. Click Create Quiz.","info"); }
+    pdfInput.addEventListener("change", () => setFile(pdfInput.files[0]));
+    ["dragenter","dragover"].forEach((event) => dropzone.addEventListener(event, (e) => { e.preventDefault(); dropzone.classList.add("dragging"); }));
+    ["dragleave","drop"].forEach((event) => dropzone.addEventListener(event, (e) => { e.preventDefault(); dropzone.classList.remove("dragging"); }));
+    dropzone.addEventListener("drop", (e) => setFile(e.dataTransfer.files[0]));
+     async function registerUser() { const name = $("userName").value.trim(); if (!name) { status("Please enter your name before starting the quiz.","error"); $("userName").focus(); throw new Error("Name is required."); } const response = await fetch("/api/register", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({name})}); const data = await response.json(); if (!response.ok || data.error) throw new Error(data.error || "Could not save your name."); }
+     async function loadQuestions(url, options) { status("Reading PDF and extracting questions…","info"); const response = await fetch(url, options); const data = await response.json(); if (!response.ok || data.error) throw new Error(data.error || "Could not create the quiz."); questions = data.questions || []; if (!questions.length) throw new Error("No questions found."); await registerUser(); current = 0; score = 0; checked = Array(questions.length).fill(false); selected = Array(questions.length).fill(null); outcomes = Array(questions.length).fill(null); $("uploadCard").style.display = "none"; $("resultsCard").classList.remove("show"); $("quizCard").classList.add("show"); $("progressShell").style.display = "block"; $("scorePill").textContent = `${questions.length} questions loaded`; render(); window.scrollTo({top:0,behavior:"smooth"}); }
+    createBtn.addEventListener("click", async () => { const file = pdfInput.files[0]; if (!file) return; const body = new FormData(); body.append("pdf", file); createBtn.disabled = true; try { await loadQuestions("/api/extract", {method:"POST",body}); } catch (error) { status(error.message,"error"); createBtn.disabled = false; } });
+     sampleBtn.addEventListener("click", async () => { try { await loadQuestions("/api/sample"); } catch (error) { status(error.message,"error"); } });
+    function render() { const item=questions[current]; $("weekBadge").textContent=`Set ${item.week || 1}`; $("assignmentBadge").textContent=item.assignment ? `Assignment ${item.assignment}` : "PDF"; $("questionNumber").textContent=`Question ${current+1} of ${questions.length}`; $("progressLabel").textContent=`Question ${current+1} of ${questions.length}`; const pct=Math.round((current/questions.length)*100); $("percentLabel").textContent=`${pct}%`; $("progressBar").style.width=`${pct}%`; $("questionText").textContent=item.question; $("options").innerHTML=item.options.map((option,index)=>`<label class="option" data-index="${index}"><input type="radio" name="answer" value="${index}" ${selected[current]===index?"checked":""} ${checked[current]?"disabled":""}><span class="option-letter">${String.fromCharCode(65+index)}.</span><span class="option-text">${esc(option)}</span></label>`).join(""); $("options").querySelectorAll("input").forEach((input)=>input.addEventListener("change",(e)=>selected[current]=Number(e.target.value))); if(checked[current]) showFeedback(); else { $("feedback").className="feedback"; $("feedback").textContent=""; } $("previousBtn").disabled=current===0; $("checkBtn").hidden=checked[current]; $("nextBtn").hidden=!checked[current]; $("nextBtn").textContent=current===questions.length-1?"View Final Score":"Next Question"; $("scorePill").textContent=`Score: ${score} / ${questions.length}`; }
+    function showFeedback() { const item=questions[current], ok=outcomes[current]; $("options").querySelectorAll(".option").forEach((label)=>{const index=Number(label.dataset.index); if(index===item.answer) label.classList.add("correct"); if(index===selected[current]&&index!==item.answer) label.classList.add("wrong");}); const answer=`${String.fromCharCode(65+item.answer)}. ${item.options[item.answer]}`; $("feedback").className=`feedback show ${ok?"correct":"wrong"}`; $("feedback").innerHTML=`<strong>${ok?"Correct!":"Not correct."}</strong> Correct answer: <strong>${esc(answer)}</strong>${item.explanation?`<div class="explanation"><strong>Explanation:</strong> ${esc(item.explanation)}</div>`:""}`; }
+    $("checkBtn").addEventListener("click",()=>{if(selected[current]===null){$("feedback").className="feedback show wrong";$("feedback").textContent="Please select one option before checking your answer.";return;} checked[current]=true; outcomes[current]=selected[current]===questions[current].answer; if(outcomes[current]) score++; render();});
+    $("nextBtn").addEventListener("click",()=>{if(current===questions.length-1){showResults();return;}current++;render();window.scrollTo({top:0,behavior:"smooth"});});
+    $("previousBtn").addEventListener("click",()=>{if(current>0){current--;render();window.scrollTo({top:0,behavior:"smooth"});}});
+    function showResults(){ $("quizCard").classList.remove("show"); $("progressShell").style.display="none"; $("resultsCard").classList.add("show"); const pct=Math.round(score/questions.length*100); $("finalScore").textContent=`${score} / ${questions.length}`; $("finalPercent").textContent=`${pct}%`; $("resultSummary").textContent=pct>=80?"Excellent work!":pct>=50?"Good effort. Review the incorrect answers and try again.":"Keep practicing and try another attempt."; $("review").innerHTML=questions.map((item,index)=>{const ok=outcomes[index];const chosen=selected[index]===null?"Not answered":`${String.fromCharCode(65+selected[index])}. ${item.options[selected[index]]}`;return `<div class="review-row ${ok?"ok":"bad"}"><strong>Q${index+1}</strong><span>${esc(chosen)}</span><span class="review-status">${ok?"Correct":"Review"}</span></div>`;}).join("");window.scrollTo({top:0,behavior:"smooth"}); }
+    $("newQuizBtn").addEventListener("click",()=>{location.reload();});
+  </script>
+</body>
+</html>

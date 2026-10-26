@@ -1,0 +1,15 @@
+   .opencode/
+   __pycache__/
+   *.pyc
+   *.pdf
+   *.png
+   *.jpg
+   *.jpeg
+   *.gif
+   *.webp
+   *.tmp
+   visitor_count.json
+   user_names.json
+   build_quiz.py
+   build_week7_12_pdf.py
+   .env

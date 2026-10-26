@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Owner Dashboard — Java Assignment 2026</title>
+  <style>
+    :root { --navy:#17365d; --blue:#2f75b5; --ink:#1f2937; --muted:#64748b; --line:#d9e2ec; --red:#b42318; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--ink); background:linear-gradient(135deg,#eef4fb,#f9fbfd); }
+    main { max-width:800px; margin:auto; padding:40px 18px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:22px; padding:clamp(22px,5vw,42px); box-shadow:0 14px 34px #17365d12; }
+    h1 { margin:0 0 8px; color:var(--navy); }
+    .muted { color:var(--muted); }
+    label { display:block; color:var(--navy); font-weight:800; margin:22px 0 8px; }
+    input { width:100%; border:1px solid var(--line); border-radius:12px; padding:13px 14px; font:inherit; }
+    button { border:0; border-radius:12px; padding:12px 18px; font:inherit; font-weight:800; cursor:pointer; color:#fff; background:var(--navy); margin-top:16px; }
+    button.secondary { color:var(--navy); background:#e9f0f7; margin-left:8px; }
+    .status { margin-top:16px; padding:12px 14px; border-radius:12px; background:#fff0ef; color:var(--red); display:none; }
+    .status.show { display:block; }
+    .summary { margin:22px 0 12px; font-weight:800; color:var(--navy); }
+    .summary-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:20px 0; }
+    .metric { border:1px solid var(--line); border-radius:14px; padding:16px; background:#f8fbff; }
+    .metric strong { display:block; color:var(--navy); font-size:24px; margin-top:4px; }
+    .section-title { margin:24px 0 8px; color:var(--navy); }
+    .user { display:flex; justify-content:space-between; gap:12px; border-bottom:1px solid var(--line); padding:12px 0; }
+    .time { color:var(--muted); font-size:12px; }
+    #dashboard { display:none; }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card" id="loginCard">
+      <h1>Owner Dashboard</h1>
+      <p class="muted">View the names submitted by quiz users. No user password is collected.</p>
+      <label for="password">Owner password</label>
+      <input id="password" type="password" autocomplete="current-password" placeholder="Enter your owner password">
+      <button id="loginBtn" type="button">Login</button>
+      <div class="status" id="status"></div>
+    </section>
+    <section class="card" id="dashboard">
+      <h1>Quiz Users</h1>
+      <p class="muted">Previous users are shown as a separate count. Names submitted after the reset appear below.</p>
+      <div class="summary-grid"><div class="metric">Previous users<strong id="previousCount">0</strong></div><div class="metric">New users<strong id="newCount">0</strong></div></div>
+      <h2 class="section-title">New user names</h2>
+      <div id="users"></div>
+      <button class="secondary" id="logoutBtn" type="button">Logout</button>
+    </section>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    function showError(message) { $("status").textContent = message; $("status").className = "status show"; }
+    async function loadUsers() {
+      const response = await fetch("/api/users");
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not load users.");
+      $("previousCount").textContent = Number(data.previous_count || 0).toLocaleString();
+      $("newCount").textContent = Number(data.new_count || 0).toLocaleString();
+      $("users").innerHTML = data.users.length ? data.users.map((user, index) => `<div class="user"><strong>${index + 1}. ${escapeHtml(user.name)}</strong><span class="time">${escapeHtml(user.submitted_at || "")}</span></div>`).join("") : `<p class="muted">No names submitted yet.</p>`;
+    }
+    function escapeHtml(value) { return String(value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
+    $("loginBtn").addEventListener("click", async () => { try { const response = await fetch("/api/admin/login", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({password:$("password").value})}); const data = await response.json(); if (!response.ok) throw new Error(data.error || "Login failed."); await loadUsers(); $("loginCard").style.display = "none"; $("dashboard").style.display = "block"; } catch (error) { showError(error.message); } });
+    $("logoutBtn").addEventListener("click", async () => { await fetch("/api/admin/logout", {method:"POST"}); location.reload(); });
+  </script>
+</body>
+</html>
