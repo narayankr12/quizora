@@ -306,6 +306,10 @@ class QuizHandler(SimpleHTTPRequestHandler):
         elif clean_path == "/api/visit":
             self.send_json(record_visit())
             return
+        if clean_path not in {"/", "/admin"}:
+            # Never serve project files (source code, data, templates) directly.
+            self.send_error(404)
+            return
         return super().do_GET()
 
     def do_POST(self):
